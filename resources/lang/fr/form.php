@@ -71,6 +71,10 @@ Le code source est disponible sur :link',
             'label'       => 'Adresse e-mail',
             'placeholder' => 'exemple : michel@aol.com',
         ],
+        'group'      => [
+            'label'       => 'Groupe',
+            'placeholder' => 'Famille Martin',
+        ],
         'exclusions' => [
             'label'       => 'Exclusions',
             'placeholder' => 'Aucune exclusion',

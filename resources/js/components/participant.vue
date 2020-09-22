@@ -18,6 +18,10 @@
                 type: String,
                 default: ''
             },
+            group: {
+                type: String,
+                default: ''
+            },
             exclusions: {
                 type: Array,
                 default: () => []
@@ -25,6 +29,10 @@
             names: {
                 type: Object,
                 required: true
+            },
+            groups: {
+                type: Object,
+                default: {}
             },
             required: {
                 type: Boolean,
@@ -55,6 +63,9 @@
             changeEmail(value) {
                 this.$emit('input:email', value);
             },
+            changeGroup(value) {
+                this.$emit('input:group', value);
+            },
             changeExclusions(value) {
                 this.$emit('input:exclusions', value);
             }
@@ -63,84 +74,107 @@
 </script>
 
 <template>
-    <tr class="participant">
-        <td class="align-middle">
-            <div class="input-group">
-                <span class="input-group-prepend counter">
-                    <span class="input-group-text"
-                        >{{ idx + 1 }}<template v-if="idx === 0"> - {{ $t('form.participant.organizer') }}</template></span
-                    >
-                </span>
-                <input
-                    type="text"
-                    :name="'participants[' + idx + '][name]'"
-                    :placeholder="$t('form.participant.name.placeholder')"
-                    :value="name"
-                    class="form-control participant-name"
-                    :class="{ 'is-invalid': $v.name.$error || fieldError(`participants.${idx}.name`) }"
-                    :aria-invalid="$v.name.$error || fieldError(`participants.${idx}.name`)"
-                    @input="changeName($event.target.value)"
-                    @blur="$v.name.$touch()"
-                />
-                <div v-if="!$v.name.required" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.name.required') }}</div>
-                <div v-else-if="!$v.name.unique" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.name.distinct') }}</div>
-                <div v-else-if="fieldError(`participants.${idx}.name`)" class="invalid-tooltip">{{ fieldError(`participants.${idx}.name`) }}</div>
-            </div>
-        </td>
-        <td class="border-left align-middle">
-            <div class="input-group">
-                <input
-                    type="email"
-                    :name="'participants[' + idx + '][email]'"
-                    :placeholder="$t('form.participant.email.placeholder')"
-                    :value="email"
-                    class="form-control participant-email"
-                    :class="{ 'is-invalid': $v.email.$error || fieldError(`participants.${idx}.email`)}"
-                    :aria-invalid="$v.email.$error || fieldError(`participants.${idx}.email`)"
-                    @input="changeEmail($event.target.value)"
-                    @blur="$v.email.$touch()"
-                />
-                <div v-if="!$v.email.required" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.email.required') }}</div>
-                <div v-else-if="!$v.email.format" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.email.format') }}</div>
-                <div v-else-if="fieldError(`participants.${idx}.email`)" class="invalid-tooltip">{{ fieldError(`participants.${idx}.email`) }}</div>
-            </div>
-        </td>
-        <td class="border-right text-left participant-exclusions-wrapper align-middle">
-            <multiselect
-                :options="otherNames"
-                :value="exclusions"
-                :placeholder="$t('form.participant.exclusions.placeholder')"
-                :multiple="true"
-                :hide-selected="true"
-                :preserve-search="true"
-                @select="$emit('addExclusion', $event)"
-                @remove="$emit('removeExclusion', $event)"
-            >
-                <template #noOptions>
-                    {{ $t('form.participant.exclusions.noOptions') }}
-                </template>
-                <template #noResult>
-                    {{ $t('form.participant.exclusions.noResult') }}
-                </template>
-            </multiselect>
-            <select style="display:none" :name="'participants[' + idx + '][exclusions][]'" multiple>
-                <option
-                    v-for="exclusion in exclusions"
-                    :key="exclusion"
-                    :value="Object.keys(names).find(idx => names[idx] === exclusion)"
-                    selected
-                >{{ exclusions }}</option>
-            </select>
-        </td>
-        <td class="participant-remove-wrapper align-middle">
-            <button
-                type="button"
-                class="btn btn-outline-danger participant-remove"
-                :disabled="required"
-                @click="$emit('delete')"
-            >
-                <i class="fas fa-minus" /><span> {{ $t('form.participant.remove') }}</span>
-            </button>
-        </td>
-    </tr>
+    <tbody class="participant"><!-- is="transition-group" type="transition" name="fade" -->
+        <tr>
+            <td class="align-middle">
+                <div class="input-group">
+                    <span class="input-group-prepend counter">
+                        <span class="input-group-text"
+                            >{{ idx + 1 }}<template v-if="idx === 0"> - {{ $t('form.participant.organizer') }}</template></span
+                        >
+                    </span>
+                    <input
+                        type="text"
+                        :name="'participants[' + idx + '][name]'"
+                        :placeholder="$t('form.participant.name.placeholder')"
+                        :value="name"
+                        class="form-control participant-name"
+                        :class="{ 'is-invalid': $v.name.$error || fieldError(`participants.${idx}.name`) }"
+                        :aria-invalid="$v.name.$error || fieldError(`participants.${idx}.name`)"
+                        @input="changeName($event.target.value)"
+                        @blur="$v.name.$touch()"
+                    />
+                    <div v-if="!$v.name.required" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.name.required') }}</div>
+                    <div v-else-if="!$v.name.unique" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.name.distinct') }}</div>
+                    <div v-else-if="fieldError(`participants.${idx}.name`)" class="invalid-tooltip">{{ fieldError(`participants.${idx}.name`) }}</div>
+                </div>
+            </td>
+            <td class="border-left align-middle">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        :name="'participants[' + idx + '][group]'"
+                        :placeholder="$t('form.participant.group.placeholder')"
+                        :value="group"
+                        class="form-control participant-group"
+                        @input="changeGroup($event.target.value)"
+                    />
+                </div>
+            </td>
+            <td class="border-right text-left participant-exclusions-wrapper align-middle" rowspan="2">
+                <multiselect
+                    :options="otherNames"
+                    :value="exclusions"
+                    :placeholder="$t('form.participant.exclusions.placeholder')"
+                    :multiple="true"
+                    :hide-selected="true"
+                    :preserve-search="true"
+                    @select="$emit('addExclusion', $event)"
+                    @remove="$emit('removeExclusion', $event)"
+                >
+                    <template #noOptions>
+                        {{ $t('form.participant.exclusions.noOptions') }}
+                    </template>
+                    <template #noResult>
+                        {{ $t('form.participant.exclusions.noResult') }}
+                    </template>
+                </multiselect>
+                <select style="display:none" :name="'participants[' + idx + '][exclusions][]'" multiple>
+                    <opton v-if="groups[group]"
+                        v-for="exclusion in groups[group]"
+                        :key="exclusion"
+                        :value="Object.keys(names).find(idx => names[idx] === exclusion)"
+                        :selected
+                        $sDisabled="true"
+                    >{{ exclusion }}</opton>
+                    <option
+                        v-for="exclusion in exclusions"
+                        :key="exclusion"
+                        :value="Object.keys(names).find(idx => names[idx] === exclusion)"
+                        selected
+                    >{{ exclusion }}</option>
+                </select>
+            </td>
+            <td class="participant-remove-wrapper align-middle" rowspan="2">
+                <button
+                    type="button"
+                    class="btn btn-outline-danger participant-remove"
+                    :disabled="required"
+                    @click="$emit('delete')"
+                >
+                    <i class="fas fa-minus" /><span> {{ $t('form.participant.remove') }}</span>
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td class="align-middle" colspan="2">
+                <div class="input-group">
+                    <input
+                        type="email"
+                        :name="'participants[' + idx + '][email]'"
+                        :placeholder="$t('form.participant.email.placeholder')"
+                        :value="email"
+                        class="form-control participant-email"
+                        :class="{ 'is-invalid': $v.email.$error || fieldError(`participants.${idx}.email`)}"
+                        :aria-invalid="$v.email.$error || fieldError(`participants.${idx}.email`)"
+                        @input="changeEmail($event.target.value)"
+                        @blur="$v.email.$touch()"
+                    />
+                    <div v-if="!$v.email.required" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.email.required') }}</div>
+                    <div v-else-if="!$v.email.format" class="invalid-tooltip">{{ $t('validation.custom.randomform.participant.email.format') }}</div>
+                    <div v-else-if="fieldError(`participants.${idx}.email`)" class="invalid-tooltip">{{ fieldError(`participants.${idx}.email`) }}</div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
 </template>

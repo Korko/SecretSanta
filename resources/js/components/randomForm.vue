@@ -98,6 +98,16 @@
                     }
                 });
                 return names;
+            },
+            participantGroups() {
+                var groups = {};
+                this.participants.forEach((participant, idx) => {
+                    if (participant.group) {
+                        groups[participant.group] = groups[participant.group] || [];
+                        groups[participant.group].append(idx);
+                    }
+                });
+                return groups;
             }
         },
 
@@ -247,37 +257,44 @@
                                         <th style="width: 33%" scope="col">
                                             {{ $t('form.participant.name.label') }}
                                         </th>
-                                        <th style="width: 33%" scope="col">
-                                            {{ $t('form.participant.email.label') }}
-                                        </th>
                                         <th style="width: 30%" scope="col">
+                                            {{ $t('form.participant.group.label') }}
+                                        </th>
+                                        <th style="width: 30%" scope="col" rowspan="2">
                                             {{ $t('form.participant.exclusions.label') }}
                                         </th>
-                                        <th style="width: 3%" scope="col" />
+                                        <th style="width: 3%" scope="col" rowspan="2" />
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 66%" scope="col" colspan="2">
+                                            {{ $t('form.participant.email.label') }}
+                                        </th>
                                     </tr>
                                 </thead>
-                                <tbody is="transition-group" type="transition" name="fade">
-                                    <!-- Default is three empty rows to have three entries at any time -->
-                                    <tr
-                                        is="participant"
-                                        v-for="(participant, idx) in participants"
-                                        :key="idx"
-                                        :id="participant.id"
-                                        :idx="idx"
-                                        :name="participant.name"
-                                        :email="participant.email"
-                                        :exclusions="participant.exclusions"
-                                        :names="participantNames"
-                                        :required="idx < 3 && participants.length <= 3"
-                                        :field-error="fieldError"
-                                        :$v="$v.participants.$each[idx]"
-                                        @input:name="$set(participant, 'name', $event)"
-                                        @input:email="$set(participant, 'email', $event)"
-                                        @input:exclusions="$set(participant, 'exclusions', $event)"
-                                        @removeExclusion="participant.exclusions.remove($event)"
-                                        @addExclusion="participant.exclusions.push($event)"
-                                        @delete="participants.splice(idx, 1)"
-                                    />
+                                <!-- Default is three empty rows to have three entries at any time -->
+                                <tbody
+                                    is="participant"
+                                    v-for="(participant, idx) in participants"
+                                    :key="idx"
+                                    :id="participant.id"
+                                    :idx="idx"
+                                    :name="participant.name"
+                                    :email="participant.email"
+                                    :exclusions="participant.exclusions"
+                                    :groups="participantGroups"
+                                    :names="participantNames"
+                                    :required="idx < 3 && participants.length <= 3"
+                                    :field-error="fieldError"
+                                    :$v="$v.participants.$each[idx]"
+                                    @input:name="$set(participant, 'name', $event)"
+                                    @input:email="$set(participant, 'email', $event)"
+                                    @input:group="$set(participant, 'group', $event)"
+                                    @input:exclusions="$set(participant, 'exclusions', $event)"
+                                    @removeExclusion="participant.exclusions.remove($event)"
+                                    @addExclusion="participant.exclusions.push($event)"
+                                    @delete="participants.splice(idx, 1)"
+                                >
+                                    <tr><td>Empty</td></tr>
                                 </tbody>
                             </table>
                             <button type="button" class="btn btn-outline-success participant-add" @click="addParticipant()">

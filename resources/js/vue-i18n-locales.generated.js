@@ -276,6 +276,10 @@ export default {
                     "label": "Adresse e-mail",
                     "placeholder": "exemple : michel@aol.com"
                 },
+                "group": {
+                    "label": "Groupe",
+                    "placeholder": "Famille Martin"
+                },
                 "exclusions": {
                     "label": "Exclusions",
                     "placeholder": "Aucune exclusion",
