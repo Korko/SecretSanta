@@ -8,11 +8,11 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.3",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0",
-        "laravel/framework": "^7.0",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "anhskohbo/no-captcha": "^3.0",
         "korko/validator": "dev-master",
@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",
-        "facade/ignition": "^2.0",
+        "facade/ignition": "^2.3.6",
         "fzaninotto/faker": "^1.9.1",
         "martinlindhe/laravel-vue-i18n-generator": "^0.1.46",
         "matt-allan/laravel-code-style": "dev-master",
