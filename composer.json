@@ -72,5 +72,11 @@
         ],
         "check-style": "php-cs-fixer fix --dry-run --allow-risky=yes --diff",
         "fix-style": "php-cs-fixer fix --allow-risky=yes"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/korko/laravel-vue-i18n-generator"
+        }
+    ]
 }
