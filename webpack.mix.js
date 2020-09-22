@@ -5,6 +5,8 @@ require('laravel-mix-purgecss');
 require('laravel-mix-polyfill');
 require('laravel-mix-modernizr');
 
+require('laravel-mix-bundle-analyzer');
+
 mix.webpackConfig({
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
@@ -33,6 +35,11 @@ mix.webpackConfig({
         // Matches all PHP or JSON files in `resources/lang` directory.
         test: /resources[\\\/]lang.+\.(php|json)$/,
         loader: 'laravel-localization-loader',
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader"
       }
     ]
   }
