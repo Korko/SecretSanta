@@ -34,4 +34,20 @@ return [
             'cancel' => 'Annuler',
         ],
     ],
+    'suggest_redraw' => [
+        'button' => 'Proposer un nouveau tirage',
+        'confirm' => [
+            'title'  => 'Vous vous apprétez à proposer aux participants de changer de cible',
+            'body' => 'Chaque participant (vous y-compris) recevra un email lui demandant si il veut relancer l\'aléatoire et potentiellement piocher le nom de quelqu\'un d\'autre. Une fois qu\'il existe au moins une autre possibilité de cibles (en fonction des exclusions définies au début), vous pourrez clicker sur le bouton "Lancer le nouveau tirage" ici même. En attendant, il sera inactif.',
+            'ok'  => 'Envoyer la proposition',
+            'cancel' => 'Annuler',
+        ],
+        'message' => 'Les participants ont été prévenu de la proposition',
+    ],
+    'redraw' => [
+        'button' => 'Lancer le nouveau tirage',
+        'confirm' => [
+        ],
+        'disabled' => 'Trop peu de participants ont accepté le nouveau tirage pour avoir de nouvelles cibles.',
+    ]
 ];

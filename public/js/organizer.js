@@ -2452,6 +2452,20 @@ vue__WEBPACK_IMPORTED_MODULE_5___default.a.use(vuejs_dialog__WEBPACK_IMPORTED_MO
       }).then(function (response) {
         if (response.data) Object(_partials_helpers_js__WEBPACK_IMPORTED_MODULE_9__["download"])(response.data, 'secretsanta_' + _this5.expirationDateShort + '_full.csv', 'text/csv');
       });
+    },
+    confirmSuggestRedraw: function confirmSuggestRedraw() {
+      var options = {
+        okText: this.$t('organizer.suggest_redraw.confirm.ok'),
+        cancelText: this.$t('organizer.suggest_redraw.confirm.cancel'),
+        customClass: 'suggest_redraw'
+      };
+      var message = {
+        title: this.$t('organizer.suggest_redraw.confirm.title'),
+        body: this.$t('organizer.suggest_redraw.confirm.body')
+      };
+      this.$dialog.confirm(message, options).then(this.suggestRedraw);
+    },
+    suggestRedraw: function suggestRedraw() {//
     }
   }
 });
@@ -21173,6 +21187,40 @@ var render = function() {
                   "\n    "
               )
             ]
+          ),
+      _vm._v(" "),
+      !_vm.data.redraw
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-warning",
+              attrs: { disabled: _vm.expired, type: "button" },
+              on: { click: _vm.confirmSuggestRedraw }
+            },
+            [
+              _c("i", { staticClass: "fas fa-paper-plane" }),
+              _vm._v(
+                "\n        " +
+                  _vm._s(_vm.$t("organizer.suggest_redraw.button")) +
+                  "\n    "
+              )
+            ]
+          )
+        : _c(
+            "button",
+            {
+              staticClass: "btn btn-warning",
+              attrs: { disabled: _vm.expired, type: "button" },
+              on: { click: _vm.confirmRedraw }
+            },
+            [
+              _c("i", { staticClass: "fas fa-dice" }),
+              _vm._v(
+                "\n        " +
+                  _vm._s(_vm.$t("organizer.redraw.button")) +
+                  "\n    "
+              )
+            ]
           )
     ],
     2
@@ -22481,6 +22529,19 @@ __webpack_require__.r(__webpack_exports__);
           "ok": "Ok",
           "cancel": "Annuler"
         }
+      },
+      "suggest_redraw": {
+        "button": "Proposer un nouveau tirage",
+        "confirm": {
+          "title": "Vous vous apprétez à proposer aux participants de changer de cible",
+          "body": "Chaque participant (vous y-compris) recevra un email lui demandant si il veut relancer l'aléatoire et potentiellement piocher le nom de quelqu'un d'autre.\nUne fois qu'il existe au moins une autre possibilité de cibles (en fonction des exclusions définies au début), vous pourrez clicker sur le bouton \"Lancer le nouveau tirage\" ici même. En attendant, il sera inactif.",
+          "ok": "Envoyer la proposition",
+          "cancel": "Annuler"
+        }
+      },
+      "redraw": {
+        "button": "Lancer le nouveau tirage",
+        "confirm": []
       }
     },
     "form": {

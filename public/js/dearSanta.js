@@ -19902,6 +19902,19 @@ __webpack_require__.r(__webpack_exports__);
           "ok": "Ok",
           "cancel": "Annuler"
         }
+      },
+      "suggest_redraw": {
+        "button": "Proposer un nouveau tirage",
+        "confirm": {
+          "title": "Vous vous apprétez à proposer aux participants de changer de cible",
+          "body": "Chaque participant (vous y-compris) recevra un email lui demandant si il veut relancer l'aléatoire et potentiellement piocher le nom de quelqu'un d'autre.\nUne fois qu'il existe au moins une autre possibilité de cibles (en fonction des exclusions définies au début), vous pourrez clicker sur le bouton \"Lancer le nouveau tirage\" ici même. En attendant, il sera inactif.",
+          "ok": "Envoyer la proposition",
+          "cancel": "Annuler"
+        }
+      },
+      "redraw": {
+        "button": "Lancer le nouveau tirage",
+        "confirm": []
       }
     },
     "form": {
