@@ -28,6 +28,8 @@ class Draw extends Model
     protected $casts = [
         'mail_title' => EncryptedString::class,
         'mail_body' => EncryptedString::class,
+        'next_solvable' => 'boolean',
+        'redraw' => 'boolean',
     ];
 
     /**
@@ -37,6 +39,7 @@ class Draw extends Model
      */
     protected $dates = [
         'expires_at',
+        'redrawn_at',
     ];
 
     public function save(array $options = [])
