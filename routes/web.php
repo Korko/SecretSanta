@@ -7,6 +7,7 @@ use App\Http\Controllers\DearSantaController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\RandomFormController;
+use App\Http\Controllers\RedrawController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,8 @@ Route::middleware(['signed', 'decrypt.key:participant,name'])->group(function ()
     Route::get('/dearsanta/{participant:hash}/fetchState', [DearSantaController::class, 'fetchState'])->name('dearsanta.fetchState');
 });
 
+Route::get('/participant/{participant:hash}/acceptRedraw', [RedrawController::class, 'accept'])->name('acceptRedraw');
+
 Route::get('/org/{draw:hash}', [OrganizerController::class, 'view'])->name('organizerPanel');
 Route::middleware(['signed', 'decrypt.key:draw,mail_title'])->group(function () {
     Route::get('/draw/{draw:hash}', [OrganizerController::class, 'fetch'])->name('organizerPanel.fetch');
@@ -43,6 +46,8 @@ Route::middleware(['signed', 'decrypt.key:draw,mail_title'])->group(function () 
     Route::get('/draw/{draw:hash}/csvInit', [OrganizerController::class, 'csvInit'])->name('organizerPanel.csvInit');
     Route::get('/draw/{draw:hash}/csvFinal', [OrganizerController::class, 'csvFinal'])->name('organizerPanel.csvFinal');
     Route::get('/org/{draw:hash}/fetchState', [OrganizerController::class, 'fetchState'])->name('organizerPanel.fetchState');
+    Route::get('/org/{draw:hash}/suggestRedraw', [RedrawController::class, 'suggestRedraw'])->name('organizerPanel.suggestRedraw');
+    Route::get('/org/{draw:hash}/redraw', [RedrawController::class, 'redraw'])->name('organizerPanel.redraw');
 });
 Route::middleware(['signed', 'decrypt.key:participant,name'])->group(function () {
     Route::post('/org/{draw:hash}/{participant:id}/changeEmail', [OrganizerController::class, 'changeEmail'])->name('organizerPanel.changeEmail');

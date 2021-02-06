@@ -155,6 +155,25 @@
                         if(response.data)
                             download(response.data, 'secretsanta_'+this.expirationDateShort+'_full.csv', 'text/csv');
                     });
+            },
+            confirmSuggestRedraw() {
+                let options = {
+                    okText: this.$t('organizer.suggest_redraw.confirm.ok'),
+                    cancelText: this.$t('organizer.suggest_redraw.confirm.cancel'),
+                    customClass: 'suggest_redraw'
+                };
+
+                let message = {
+                    title: this.$t('organizer.suggest_redraw.confirm.title'),
+                    body: this.$t('organizer.suggest_redraw.confirm.body')
+                };
+
+                this.$dialog
+                    .confirm(message, options)
+                    .then(this.suggestRedraw);
+            },
+            suggestRedraw() {
+                //
             }
         }
     };
@@ -220,6 +239,14 @@
         <button v-else type="button" class="btn btn-primary" @click="download" v-tooltip.top="{ img: 'rune-haugseng-UCzjZPCGV1Y-unsplash.jpg', text: $t('organizer.download.button-tooltip') }">
             <i class="fas fa-download" />
             {{ $t('organizer.download.button') }}
+        </button>
+        <button v-if="!data.redraw" :disabled="expired" type="button" class="btn btn-warning" @click="confirmSuggestRedraw">
+            <i class="fas fa-paper-plane" />
+            {{ $t('organizer.suggest_redraw.button') }}
+        </button>
+        <button v-else :disabled="expired" type="button" class="btn btn-warning" @click="confirmRedraw">
+            <i class="fas fa-dice" />
+            {{ $t('organizer.redraw.button') }}
         </button>
     </div>
 </template>
