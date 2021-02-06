@@ -25,6 +25,7 @@ class Participant extends Model
     protected $casts = [
         'name' => EncryptedString::class,
         'email' => EncryptedString::class,
+        'redraw' => 'boolean',
     ];
 
     /**
