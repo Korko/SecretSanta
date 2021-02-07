@@ -13,6 +13,8 @@ class SuggestRedraw extends Mailable
     public $organizerName;
     public $targetName;
 
+    public $acceptLink;
+
     /**
      * Create a new message instance.
      *
