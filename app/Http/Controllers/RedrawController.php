@@ -3,36 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Collections\ParticipantsCollection;
-use App\Exceptions\SolverException;
 use App\Models\Draw;
 use App\Models\Participant;
 use App\Notifications\SuggestRedraw;
-use Solver;
 
 class RedrawController extends Controller
 {
-    protected function getRedraw(ParticipantsCollection $participants)
-    {
-        $participants = $participants->appendTargetToExclusions();
-        return Solver::one($participants->toArray(), $participants->pluck('exclusions.*.id', 'id')->toArray());
-    }
-
-    protected function canRedraw(ParticipantsCollection $participants)
-    {
-        try {
-            $this->getRedraw($participants);
-
-            return true;
-        } catch (SolverException $e) {
-            return false;
-        }
-    }
-
     public function suggestRedraw(Draw $draw)
     {
-        if (! $this->canRedraw($draw->participants)) {
+        if (! $draw->next_solvable) {
             return response()->json([
-                'message' => ''
+                'message' => ''//TODO
             ], 403);
         }
 
