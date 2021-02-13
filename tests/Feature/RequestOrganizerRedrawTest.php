@@ -5,7 +5,7 @@ use App\Mail\SuggestRedraw;
 test('the organizer can organize a redraw', function () {
     Mail::fake();
 
-    $draw = createDrawWithParticipants(3);
+    $draw = createDatabaseDraw(3);
 
     assertFalse($draw->fresh()->redraw);
 
@@ -25,7 +25,7 @@ test('the organizer can organize a redraw', function () {
 });
 
 test('the organizer cannot organize a redraw if only one solution possible', function ($participants, $targets) {
-    $draw = createDraw($participants);
+    $draw = createServiceDraw($participants);
 
     assertFalse($draw->fresh()->redraw);
 
@@ -43,7 +43,7 @@ test('the organizer cannot organize a redraw if only one solution possible', fun
 test('participants can accept the redraw', function () {
     Mail::fake();
 
-    $draw = createDrawWithParticipants(3);
+    $draw = createDatabaseDraw(3);
 
     $path = URL::signedRoute('organizerPanel.suggestRedraw', [
         'draw' => $draw->hash
