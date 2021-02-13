@@ -933,7 +933,7 @@ exports.install = function(Vue) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /*!
- * vue-i18n v8.22.3 
+ * vue-i18n v8.22.4 
  * (c) 2021 kazuya kawaguchi
  * Released under the MIT License.
  */
@@ -2808,7 +2808,12 @@ VueI18n.prototype.mergeLocaleMessage = function mergeLocaleMessage (locale, mess
   if (this._warnHtmlInMessage === 'warn' || this._warnHtmlInMessage === 'error') {
     this._checkLocaleMessage(locale, this._warnHtmlInMessage, message);
   }
-  this._vm.$set(this._vm.messages, locale, merge({}, this._vm.messages[locale] || {}, message));
+  this._vm.$set(this._vm.messages, locale, merge(
+    typeof this._vm.messages[locale] !== 'undefined' && Object.keys(this._vm.messages[locale]).length
+      ? this._vm.messages[locale]
+      : {},
+    message
+  ));
 };
 
 VueI18n.prototype.getDateTimeFormat = function getDateTimeFormat (locale) {
@@ -3120,7 +3125,7 @@ Object.defineProperty(VueI18n, 'availabilities', {
 });
 
 VueI18n.install = install;
-VueI18n.version = '8.22.3';
+VueI18n.version = '8.22.4';
 
 /* harmony default export */ __webpack_exports__["default"] = (VueI18n);
 
