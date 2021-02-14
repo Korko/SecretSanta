@@ -68,14 +68,40 @@ test('participants can accept the redraw by mail', function () {
 
     foreach ($links as $id => $link) {
         $participant = URLParser::parseByName('acceptRedraw', $link)->participant;
+        assertEquals($draw->participants[$id]->id, $participant->id);
 
         assertFalse($participant->redraw);
 
-        $this->get($link)
-            ->assertSuccessful();
+        test()->get($link)->assertSuccessful();
 
         assertTrue($participant->fresh()->redraw);
     }
+});
+
+test('participants cannot accept the redraw if closed', function () {
+    Mail::fake();
+
+    $draw = Draw::factory()
+        ->hasParticipants(3)
+        ->create();
+
+    $path = URL::signedRoute('organizerPanel.suggestRedraw', [
+        'draw' => $draw->hash
+    ]);
+    ajaxGet($path)
+        ->assertSuccessful()
+        ->assertJsonStructure(['message']);
+
+    $draw->update(['redraw' => false]);
+
+    Mail::assertSent(function (SuggestRedrawMail $mail) {
+        test()->get($mail->acceptLink)->assertStatus(403);
+
+        $participant = URLParser::parseByName('acceptRedraw', $mail->acceptLink)->participant;
+        assertFalse($participant->fresh()->redraw);
+
+        return true;
+    });
 });
 
 test('the organizer cannot process the redraw until a solution is possible', function () {

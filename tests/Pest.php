@@ -95,28 +95,6 @@ function createServiceDraw($participants) : Draw {
         ->save();
 }
 
-function createAjaxDraw(int $totalParticipants) : array {
-    assertEquals(0, Draw::count());
-    assertEquals(0, Participant::count());
-
-    $participants = generateParticipants($totalParticipants);
-
-    // Initiate DearSanta
-    ajaxPost('/', [
-            'participants'    => $participants,
-            'title'           => faker()->sentence(),
-            'content-email'   => 'test mail {SANTA} => {TARGET}',
-            'data-expiration' => date('Y-m-d', strtotime('+2 days')),
-        ])
-        ->assertSuccessful()
-        ->assertJsonStructure(['message']);
-
-    assertEquals(1, Draw::count());
-    assertEquals($totalParticipants, Participant::count());
-
-    return $participants;
-}
-
 function generateParticipants(int $totalParticipants) : array {
     $participants = [];
     for ($i = 0; $i < $totalParticipants; $i++) {
