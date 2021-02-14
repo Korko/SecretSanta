@@ -11,11 +11,7 @@ class RedrawController extends Controller
 {
     public function suggestRedraw(Draw $draw)
     {
-        if (! $draw->next_solvable) {
-            return response()->json([
-                'message' => ''//TODO
-            ], 403);
-        }
+        abort_unless($draw->next_solvable, 403, 'Cet évènement ne peux pas avoir d\'autres solutions.');
 
         $draw->update(['redraw' => true]);
 
@@ -28,9 +24,7 @@ class RedrawController extends Controller
 
     public function accept(Participant $participant)
     {
-        if (! $participant->draw->redraw) {
-            return response('', 403);//TODO
-        }
+        abort_unless($participant->draw->redraw, 403, 'Cet évènement ne propose plus le retirage.');
 
         $participant->update(['redraw' => true]);
 
