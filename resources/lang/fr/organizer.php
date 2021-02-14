@@ -49,5 +49,6 @@ return [
         'confirm' => [
         ],
         'disabled' => 'Trop peu de participants ont accepté le nouveau tirage pour avoir de nouvelles cibles.',
+        'message' => 'Les participants volontaires ont correctement reçu une nouvelle cible.'
     ]
 ];

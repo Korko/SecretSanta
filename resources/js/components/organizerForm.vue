@@ -244,7 +244,7 @@
             <i class="fas fa-paper-plane" />
             {{ $t('organizer.suggest_redraw.button') }}
         </button>
-        <button v-else :disabled="expired" type="button" class="btn btn-warning" @click="confirmRedraw">
+        <button v-else :disabled="!canRedraw || expired" type="button" class="btn btn-warning" @click="confirmRedraw">
             <i class="fas fa-dice" />
             {{ $t('organizer.redraw.button') }}
         </button>
