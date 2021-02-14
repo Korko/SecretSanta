@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\EncryptedString;
+use App\Services\DrawHandler;
 use DateInterval;
 use DateTime;
 use exussum12\xxhash\V32 as xxHash;
@@ -41,6 +42,13 @@ class Draw extends Model
         'redrawn_at',
     ];
 
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
     public function save(array $options = [])
     {
         $this->expires_at = $this->expires_at ?: (new DateTime('now'))->add(new DateInterval('P7D'));
@@ -77,6 +85,11 @@ class Draw extends Model
     public function getMetricIdAttribute()
     {
         return (new xxHash($this->id))->hash($this->created_at);
+    }
+
+    public function getCanRedrawAttribute()
+    {
+        return DrawHandler::canRedraw($this->participants->redrawables());
     }
 
     public function createMetric($name)

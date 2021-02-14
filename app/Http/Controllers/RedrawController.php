@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Collections\ParticipantsCollection;
 use App\Models\Draw;
 use App\Models\Participant;
 use App\Notifications\SuggestRedraw;
+use App\Services\DrawHandler;
 
 class RedrawController extends Controller
 {
@@ -17,12 +17,9 @@ class RedrawController extends Controller
             ], 403);
         }
 
-        $draw->redraw = true;
-        $draw->save();
+        $draw->update(['redraw' => true]);
 
-        $draw->participants->each(function ($participant) {
-            $participant->notify(new SuggestRedraw);
-        });
+        $draw->participants->each->notify(new SuggestRedraw);
 
         return response()->json([
             'message' => trans('organizer.suggest_redraw.message'),
@@ -31,20 +28,24 @@ class RedrawController extends Controller
 
     public function accept(Participant $participant)
     {
-        $participant->redraw = true;
-        $participant->save();
+        if (! $participant->draw->redraw) {
+            return response('', 403);//TODO
+        }
 
-        return '';
+        $participant->update(['redraw' => true]);
+
+        return '';//TODO
     }
 
     public function redraw(Draw $draw)
     {
-        $participants = $draw->participants->filter(function ($participant) {
-            return $participant->redraw;
-        });
+        DrawHandler::solve($draw, $draw->participants->redrawables()->appendTargetToExclusions());
 
-        dd($this->getRedraw($participants)); // TODO
+        $draw->update(['redraw' => false]);
+        $draw->participants->each->update(['redraw' => false]);
 
-        return '';
+        return response()->json([
+            'message' => trans('organizer.redraw.message'),
+        ]);
     }
 }

@@ -39,7 +39,8 @@ class OrganizerController extends Controller
                     ])
                 ];
             }),
-            'finalCsvAvailable' => $draw->next_solvable
+            'finalCsvAvailable' => $draw->next_solvable,
+            'canRedraw' => $draw->can_redraw
         ]);
     }
 
