@@ -19,8 +19,8 @@ it('sends no notifications in case of error', function ($participants) {
             'content-email'   => 'test mail {SANTA} => {TARGET}',
             'data-expiration' => date('Y-m-d', strtotime('+2 days')),
         ])
-        ->assertJsonStructure(['message'])
-        ->assertStatus(422);
+        ->assertStatus(422)
+        ->assertJsonStructure(['message']);
 
     assertEquals(0, Draw::count());
     assertEquals(0, Participant::count());
@@ -29,13 +29,7 @@ it('sends no notifications in case of error', function ($participants) {
 it('sends notifications in case of success', function () {
     Notification::fake();
 
-    assertEquals(0, Draw::count());
-    assertEquals(0, Participant::count());
-
     $participants = createAjaxDraw(3);
-
-    assertEquals(1, Draw::count());
-    assertEquals(3, Participant::count());
 
     $draw = Draw::find(1);
 

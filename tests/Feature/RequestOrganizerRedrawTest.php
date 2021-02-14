@@ -20,8 +20,8 @@ test('the organizer can organize a redraw', function () {
     ]);
 
     ajaxGet($path)
-        ->assertJsonStructure(['message'])
-        ->assertStatus(200);
+        ->assertSuccessful()
+        ->assertJsonStructure(['message']);
 
     assertTrue($draw->fresh()->redraw);
 
@@ -40,8 +40,8 @@ test('the organizer cannot organize a redraw if only one solution possible', fun
     ]);
 
     ajaxGet($path)
-        ->assertJsonStructure(['message'])
-        ->assertStatus(403);
+        ->assertForbidden()
+        ->assertJsonStructure(['message']);
 
     assertFalse($draw->fresh()->redraw);
 })->with('unique participants list');
@@ -57,8 +57,8 @@ test('participants can accept the redraw by mail', function () {
         'draw' => $draw->hash
     ]);
     ajaxGet($path)
-        ->assertJsonStructure(['message'])
-        ->assertStatus(200);
+        ->assertSuccessful()
+        ->assertJsonStructure(['message']);
 
     $links = [];
     Mail::assertSent(function (SuggestRedrawMail $mail) use (&$links) {
@@ -71,8 +71,8 @@ test('participants can accept the redraw by mail', function () {
 
         assertFalse($participant->redraw);
 
-        $response = $this->get($link);
-        assertEquals(200, $response->status(), $response->__toString());
+        $this->get($link)
+            ->assertSuccessful();
 
         assertTrue($participant->fresh()->redraw);
     }
@@ -120,8 +120,8 @@ test('the organizer can process the redraw', function () {
         'draw' => $draw->hash
     ]);
     ajaxGet($path)
-        ->assertJsonStructure(['message'])
-        ->assertStatus(200);
+        ->assertSuccessful()
+        ->assertJsonStructure(['message']);
 
     Notification::assertTimesSent(count($draw->participants) * 2, TargetDrawn::class);
 
