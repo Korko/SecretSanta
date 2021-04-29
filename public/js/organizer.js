@@ -21692,7 +21692,10 @@ var render = function() {
             "button",
             {
               staticClass: "btn btn-warning",
-              attrs: { disabled: _vm.expired, type: "button" },
+              attrs: {
+                disabled: !_vm.canRedraw || _vm.expired,
+                type: "button"
+              },
               on: { click: _vm.confirmRedraw }
             },
             [
