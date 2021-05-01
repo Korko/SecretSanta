@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Casts\EncryptedString;
-use App\Events\DrawDeleted;
 use App\Services\DrawHandler;
 use DateInterval;
 use DateTime;
