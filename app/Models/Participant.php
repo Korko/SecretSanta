@@ -35,6 +35,15 @@ class Participant extends Model
      */
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::deleting(function ($participant) {
+            $participant->dearSanta->each->delete();
+            $participant->exclusions->each->delete();
+            $participant->mail->delete();
+        });
+    }
+
     public function draw()
     {
         return $this->belongsTo(Draw::class);
@@ -57,7 +66,7 @@ class Participant extends Model
 
     public function mail()
     {
-        return $this->belongsTo(Mail::class, 'mail_id');
+        return $this->morphOne(Mail::class, 'mailable');
     }
 
     public function exclusions()

@@ -47,7 +47,7 @@ test('the organizer cannot organize a redraw if only one solution possible', fun
 })->with('unique participants list');
 
 test('participants can accept the redraw by mail', function () {
-    Mail::fake();
+    Notification::fake();
 
     $draw = Draw::factory()
         ->hasParticipants(3)
@@ -60,26 +60,26 @@ test('participants can accept the redraw by mail', function () {
         ->assertSuccessful()
         ->assertJsonStructure(['message']);
 
-    $links = [];
-    Mail::assertSent(function (SuggestRedrawMail $mail) use (&$links) {
-        return $links[] = $mail->acceptLink;
-    });
-    assertEquals(count($draw->participants), count($links));
+    foreach($draw->participants as $participant) {
+        Notification::assertSentTo($participant, function (SuggestRedrawNotification $notification) use ($participant) {
+            $link = $notification->toMail($participant)->data()['acceptLink'];
 
-    foreach ($links as $id => $link) {
-        $participant = URLParser::parseByName('acceptRedraw', $link)->participant;
-        assertEquals($draw->participants[$id]->id, $participant->id);
+            $guessedParticipant = URLParser::parseByName('acceptRedraw', $link)->participant;
+            assertEquals($participant->id, $guessedParticipant->id);
 
-        assertFalse($participant->redraw);
+            assertFalse($participant->redraw);
 
-        test()->get($link)->assertSuccessful();
+            test()->get($link)->assertSuccessful();
 
-        assertTrue($participant->fresh()->redraw);
+            assertTrue($participant->fresh()->redraw);
+
+            return true;
+        });
     }
 });
 
 test('participants cannot accept the redraw if closed', function () {
-    Mail::fake();
+    Notification::fake();
 
     $draw = Draw::factory()
         ->hasParticipants(3)
@@ -94,14 +94,18 @@ test('participants cannot accept the redraw if closed', function () {
 
     $draw->update(['redraw' => false]);
 
-    Mail::assertSent(function (SuggestRedrawMail $mail) {
-        test()->get($mail->acceptLink)->assertStatus(403);
+    foreach($draw->participants as $participant) {
+        Notification::assertSentTo($participant, function (SuggestRedrawNotification $notification) use ($participant) {
+            $link = $notification->toMail($participant)->data()['acceptLink'];
 
-        $participant = URLParser::parseByName('acceptRedraw', $mail->acceptLink)->participant;
-        assertFalse($participant->fresh()->redraw);
+            test()->get($link)->assertStatus(403);
 
-        return true;
-    });
+            $participant = URLParser::parseByName('acceptRedraw', $link)->participant;
+            assertFalse($participant->fresh()->redraw);
+
+            return true;
+        });
+    }
 });
 
 test('the organizer cannot process the redraw until a solution is possible', function () {
